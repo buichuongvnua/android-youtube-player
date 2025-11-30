@@ -19,16 +19,12 @@ buildscript {
   }
 }
 
-apply plugin: 'io.github.gradle-nexus.publish-plugin'
-apply from: "./scripts/publish-root.gradle"
+// Removed publish plugin - should be applied to root project only
+// apply plugin: 'io.github.gradle-nexus.publish-plugin'
+// apply from: "./scripts/publish-root.gradle"
 
+// Removed allprojects repositories - using settings.gradle.kts repositories instead
 allprojects {
-  repositories {
-    google()
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
-  }
-
   tasks.withType(Javadoc).all {
     enabled = false
   }

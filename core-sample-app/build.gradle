@@ -43,9 +43,9 @@ dependencies {
   androidTestImplementation "androidx.test:runner:$versions.runner"
   androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espressoCore"
 
-  implementation project(':core')
-  implementation project(':custom-ui')
-  implementation project(':chromecast-sender')
+  implementation project(':youtube-player:core')
+  implementation project(':youtube-player:custom-ui')
+  implementation project(':youtube-player:chromecast-sender')
 
   implementation "androidx.appcompat:appcompat:$versions.appcompat"
   implementation "androidx.recyclerview:recyclerview:$versions.androidxRecyclerView"

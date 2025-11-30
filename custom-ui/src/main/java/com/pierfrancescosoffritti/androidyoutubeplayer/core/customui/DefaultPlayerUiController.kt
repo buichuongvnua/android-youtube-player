@@ -10,15 +10,15 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.menu.YouTubePlayerMenu
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.menu.defaultMenu.DefaultYouTubePlayerMenu
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.utils.FadeViewHelper
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.views.YouTubePlayerSeekBar
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.views.YouTubePlayerSeekBarListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 class DefaultPlayerUiController(
   private val youTubePlayerView: YouTubePlayerView,
@@ -51,12 +51,15 @@ class DefaultPlayerUiController(
 
   private val customActionLeft: ImageView = rootView.findViewById(R.id.custom_action_left_button)
   private val customActionRight: ImageView = rootView.findViewById(R.id.custom_action_right_button)
+  private val arrowDownButton: ImageView = rootView.findViewById(R.id.arrow_down_button)
 
-  private val youtubePlayerSeekBar: YouTubePlayerSeekBar = rootView.findViewById(R.id.youtube_player_seekbar)
+  private val youtubePlayerSeekBar: YouTubePlayerSeekBar =
+    rootView.findViewById(R.id.youtube_player_seekbar)
   private val fadeControlsContainer: FadeViewHelper = FadeViewHelper(controlsContainer)
 
   private var onFullscreenButtonListener: View.OnClickListener
   private var onMenuButtonClickListener: View.OnClickListener
+  private var onArrowDownButtonClickListener: View.OnClickListener
 
   private var isPlaying = false
   private var isPlayPauseButtonEnabled = true
@@ -128,6 +131,8 @@ class DefaultPlayerUiController(
     }
 
     onMenuButtonClickListener = View.OnClickListener { youTubePlayerMenu.show(menuButton) }
+    onArrowDownButtonClickListener = View.OnClickListener {
+    }
 
     initClickListeners()
   }
@@ -144,6 +149,7 @@ class DefaultPlayerUiController(
     playPauseButton.setOnClickListener { onPlayButtonPressed() }
     fullscreenButton.setOnClickListener { onFullscreenButtonListener.onClick(fullscreenButton) }
     menuButton.setOnClickListener { onMenuButtonClickListener.onClick(menuButton) }
+    arrowDownButton.setOnClickListener { onArrowDownButtonClickListener.onClick(arrowDownButton) }
   }
 
   override fun showVideoTitle(show: Boolean): PlayerUiController {
@@ -217,6 +223,16 @@ class DefaultPlayerUiController(
     return this
   }
 
+  override fun showArrowDownButton(show: Boolean): PlayerUiController {
+    arrowDownButton.visibility = if (show) View.VISIBLE else View.GONE
+    return this
+  }
+
+  override fun setArrowDownButtonClickListener(customArrowDownButtonClickListener: View.OnClickListener): PlayerUiController {
+    onArrowDownButtonClickListener = customArrowDownButtonClickListener
+    return this
+  }
+
   override fun showCurrentTime(show: Boolean): PlayerUiController {
     youtubePlayerSeekBar.videoCurrentTimeTextView.visibility = if (show) View.VISIBLE else View.GONE
     return this
@@ -260,6 +276,7 @@ class DefaultPlayerUiController(
   }
 
   override fun setFullscreenButtonClickListener(customFullscreenButtonClickListener: View.OnClickListener): PlayerUiController {
+
     onFullscreenButtonListener = customFullscreenButtonClickListener
     return this
   }
