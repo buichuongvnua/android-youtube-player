@@ -52,6 +52,7 @@ class DefaultPlayerUiController(
   private val customActionLeft: ImageView = rootView.findViewById(R.id.custom_action_left_button)
   private val customActionRight: ImageView = rootView.findViewById(R.id.custom_action_right_button)
   private val arrowDownButton: ImageView = rootView.findViewById(R.id.arrow_down_button)
+  private val lockButton: ImageView = rootView.findViewById(R.id.lock_button)
 
   private val youtubePlayerSeekBar: YouTubePlayerSeekBar =
     rootView.findViewById(R.id.youtube_player_seekbar)
@@ -231,6 +232,46 @@ class DefaultPlayerUiController(
   override fun setArrowDownButtonClickListener(customArrowDownButtonClickListener: View.OnClickListener): PlayerUiController {
     onArrowDownButtonClickListener = customArrowDownButtonClickListener
     return this
+  }
+
+  override fun showLockButton(show: Boolean): PlayerUiController {
+    lockButton.visibility = if (show) View.VISIBLE else View.GONE
+    return this
+  }
+
+  override fun setLockButton(
+    icon: Drawable,
+    clickListener: View.OnClickListener?
+  ): PlayerUiController {
+    lockButton.setImageDrawable(icon)
+    lockButton.setOnClickListener(clickListener)
+    showLockButton(true)
+    return this
+  }
+
+  fun hideAllControlsExceptLock() {
+    videoTitle.visibility = View.GONE
+    playPauseButton.visibility = View.GONE
+    menuButton.visibility = View.GONE
+    youTubeButton.visibility = View.GONE
+    fullscreenButton.visibility = View.GONE
+    customActionLeft.visibility = View.GONE
+    customActionRight.visibility = View.GONE
+    arrowDownButton.visibility = View.GONE
+    youtubePlayerSeekBar.visibility = View.GONE
+    liveVideoIndicator.visibility = View.GONE
+    lockButton.visibility = View.VISIBLE
+  }
+
+  fun showAllControls() {
+    if (isPlayPauseButtonEnabled) playPauseButton.visibility = View.VISIBLE
+    if (isCustomActionLeftEnabled) customActionLeft.visibility = View.VISIBLE
+    if (isCustomActionRightEnabled) customActionRight.visibility = View.VISIBLE
+    videoTitle.visibility = View.VISIBLE
+    menuButton.visibility = View.VISIBLE
+    fullscreenButton.visibility = View.VISIBLE
+    arrowDownButton.visibility = View.GONE
+    youtubePlayerSeekBar.visibility = View.VISIBLE
   }
 
   override fun showCurrentTime(show: Boolean): PlayerUiController {

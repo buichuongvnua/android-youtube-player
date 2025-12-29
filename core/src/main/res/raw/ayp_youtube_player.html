@@ -10,6 +10,16 @@
             overflow: hidden;
             position: fixed;
         }
+        #videoEndedOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            z-index: 9999;
+            display: none;
+        }
     </style>
 
   <head>
@@ -22,6 +32,7 @@
 
   <body>
     <div id="youTubePlayerDOM"></div>
+    <div id="videoEndedOverlay"></div>
   </body>
 
   <script type="text/javascript">
@@ -37,6 +48,62 @@
     var player;
 
     var timerId;
+    var hideControlsIntervalId;
+
+    function showEndedOverlay() {
+      var overlay = document.getElementById('videoEndedOverlay');
+      if (overlay) {
+        overlay.style.display = 'block';
+      }
+    }
+
+    function hideEndedOverlay() {
+      var overlay = document.getElementById('videoEndedOverlay');
+      if (overlay) {
+        overlay.style.display = 'none';
+      }
+    }
+
+    function hideControlsOnce() {
+      var playerIFrame = document.querySelector("iframe");
+      if (!playerIFrame) {
+        return;
+      }
+      
+      try {
+        var frameDoc = playerIFrame.contentDocument || playerIFrame.contentWindow.document;
+        if (!frameDoc) {
+          return;
+        }
+
+        var selectors = [
+          '.ytwPlayerTopControlsHost',
+          '.fullscreen-action-menu',
+          '.ytwPlayerMiddleControlsHost'
+        ];
+
+        selectors.forEach(function(selector) {
+          var elements = frameDoc.querySelectorAll(selector);
+          elements.forEach(function(element) {
+            element.style.display = 'none';
+            element.style.visibility = 'hidden';
+            element.style.opacity = '0';
+          });
+        });
+      } catch (e) {
+        
+      }
+    }
+
+    function hideControls() {
+      if (hideControlsIntervalId) {
+        clearInterval(hideControlsIntervalId);
+      }
+      
+      hideControlsIntervalId = setInterval(function() {
+        hideControlsOnce();
+      }, 10);
+    }
 
     function onYouTubeIframeAPIReady() {
 
@@ -46,8 +113,14 @@
         height: '100%',
         width: '100%',
         events: {
-          onReady: function(event) { YouTubePlayerBridge.sendReady() },
-          onStateChange: function(event) { sendPlayerStateChange(event.data) },
+          onReady: function(event) { 
+            YouTubePlayerBridge.sendReady();
+            hideControls();
+          },
+          onStateChange: function(event) { 
+            hideControls();
+            sendPlayerStateChange(event.data) 
+          },
           onPlaybackQualityChange: function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
           onPlaybackRateChange: function(event) { YouTubePlayerBridge.sendPlaybackRateChange(event.data) },
           onError: function(error) { YouTubePlayerBridge.sendError(error.data) },
@@ -70,14 +143,19 @@
         case YT.PlayerState.UNSTARTED:
           sendStateChange(UNSTARTED);
           sendVideoIdFromPlaylistIfAvailable(player);
+          hideEndedOverlay();
           return;
 
         case YT.PlayerState.ENDED:
           sendStateChange(ENDED);
+          hideControlsOnce();
+          showEndedOverlay();
           return;
 
         case YT.PlayerState.PLAYING:
           sendStateChange(PLAYING);
+          hideControlsOnce();
+          hideEndedOverlay();
 
           startSendCurrentTimeInterval();
           sendVideoData(player);
@@ -85,14 +163,18 @@
 
         case YT.PlayerState.PAUSED:
           sendStateChange(PAUSED);
+          hideControlsOnce();
+          hideEndedOverlay();
           return;
 
         case YT.PlayerState.BUFFERING:
           sendStateChange(BUFFERING);
+          hideEndedOverlay();
           return;
 
         case YT.PlayerState.CUED:
           sendStateChange(CUED);
+          hideEndedOverlay();
           return;
       }
 
@@ -142,11 +224,13 @@
     function loadVideo(videoId, startSeconds) {
       player.loadVideoById(videoId, startSeconds);
       YouTubePlayerBridge.sendVideoId(videoId);
+      hideEndedOverlay();
     }
 
     function cueVideo(videoId, startSeconds) {
       player.cueVideoById(videoId, startSeconds);
       YouTubePlayerBridge.sendVideoId(videoId);
+      hideEndedOverlay();
     }
 
     function mute() {

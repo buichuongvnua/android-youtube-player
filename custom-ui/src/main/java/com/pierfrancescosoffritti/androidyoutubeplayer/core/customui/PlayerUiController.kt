@@ -36,6 +36,9 @@ interface PlayerUiController {
   fun showArrowDownButton(show: Boolean): PlayerUiController
   fun setArrowDownButtonClickListener(customArrowDownButtonClickListener: View.OnClickListener): PlayerUiController
 
+  fun showLockButton(show: Boolean): PlayerUiController
+  fun setLockButton(icon: Drawable, clickListener: View.OnClickListener?): PlayerUiController
+
   fun showCurrentTime(show: Boolean): PlayerUiController
   fun showDuration(show: Boolean): PlayerUiController
 
