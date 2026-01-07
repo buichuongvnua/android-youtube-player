@@ -5,7 +5,9 @@ import com.moynext.yt_explode.client.YTHttpClient
 import com.moynext.yt_explode.common.Thumbnail
 import com.moynext.yt_explode.playlists.PlaylistId
 import com.moynext.yt_explode.videos.VideoId
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URLEncoder
@@ -121,7 +123,9 @@ class SearchPage private constructor(
         throw Exception("Failed to get search page: HTTP ${response.code}")
       }
 
-      val body = response.body?.string() ?: throw Exception("Failed to get search page body")
+      val body = withContext(Dispatchers.IO) {
+        response.body?.string() ?: throw Exception("Failed to get search page body")
+      }
 
       val searchContent = mutableListOf<SearchResult>()
       val relatedVideos = mutableListOf<SearchResult>()
@@ -620,7 +624,9 @@ class SearchPage private constructor(
       return null
     }
 
-    val body = response.body?.string() ?: return null
+    val body = withContext(Dispatchers.IO) {
+      response.body?.string() ?: return@withContext null
+    } ?: return null
 
     try {
       val json = JSONObject(body)

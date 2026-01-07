@@ -270,7 +270,7 @@ class DefaultPlayerUiController(
     videoTitle.visibility = View.VISIBLE
     menuButton.visibility = View.VISIBLE
     fullscreenButton.visibility = View.VISIBLE
-    arrowDownButton.visibility = View.GONE
+    arrowDownButton.visibility = View.VISIBLE
     youtubePlayerSeekBar.visibility = View.VISIBLE
   }
 

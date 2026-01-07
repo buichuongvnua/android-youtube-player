@@ -52,6 +52,8 @@ class IFramePlayerOptions private constructor(private val playerOptions: JSONObj
       addInt(REL, 0)
       addInt(IV_LOAD_POLICY, 3)
       addInt(CC_LOAD_POLICY, 0)
+      addInt("showinfo", 0)
+      addInt("modestbranding", 1)
     }
 
     fun build(): IFramePlayerOptions {

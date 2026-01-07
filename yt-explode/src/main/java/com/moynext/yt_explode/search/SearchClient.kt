@@ -2,6 +2,8 @@ package com.moynext.yt_explode.search
 
 import com.moynext.yt_explode.client.YTHttpClient
 import com.moynext.yt_explode.videos.Video
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -62,7 +64,9 @@ class SearchClient(
       "https://suggestqueries-clients6.youtube.com/complete/search?client=youtube&hl=en&gl=en&q=$encodedQuery&callback=func"
 
     val response = httpClient.get(url)
-    val body = response.body?.string() ?: return emptyList()
+    val body = withContext(Dispatchers.IO) {
+      response.body?.string() ?: return@withContext null
+    } ?: return emptyList()
 
     val startIndex = body.indexOf("func(")
     if (startIndex == -1) return emptyList()

@@ -74,7 +74,9 @@ class YTHttpClient(
   ): String {
     val response = get(url, headers, validate)
     if (closed) throw HttpClientClosedException()
-    return response.body?.string() ?: ""
+    return withContext(Dispatchers.IO) {
+      response.body?.string() ?: ""
+    }
   }
 
   suspend fun get(
@@ -157,7 +159,9 @@ class YTHttpClient(
 
     if (closed) throw HttpClientClosedException()
 
-    return response.body?.string() ?: ""
+    return withContext(Dispatchers.IO) {
+      response.body?.string() ?: ""
+    }
   }
 
   suspend fun getContentLength(
@@ -228,7 +232,10 @@ class YTHttpClient(
       try {
         val response = post(url, headers, Json.encodeToString(body), true)
         if (closed) throw HttpClientClosedException()
-        return Json.parseToJsonElement(response.body?.string() ?: "{}").jsonObject
+        val bodyString = withContext(Dispatchers.IO) {
+          response.body?.string() ?: "{}"
+        }
+        return Json.parseToJsonElement(bodyString).jsonObject
       } catch (e: Exception) {
         lastException = e
       }
