@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -20,7 +22,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
-class DefaultPlayerUiController(
+open class DefaultPlayerUiController(
   private val youTubePlayerView: YouTubePlayerView,
   private val youTubePlayer: YouTubePlayer
 ) : PlayerUiController {
@@ -54,6 +56,9 @@ class DefaultPlayerUiController(
   private val arrowDownButton: ImageView = rootView.findViewById(R.id.arrow_down_button)
   private val lockButton: ImageView = rootView.findViewById(R.id.lock_button)
 
+  private val rewindFeedback: LinearLayout = rootView.findViewById(R.id.rewind_feedback_container)
+  private val forwardFeedback: LinearLayout = rootView.findViewById(R.id.forward_feedback_container)
+
   private val youtubePlayerSeekBar: YouTubePlayerSeekBar =
     rootView.findViewById(R.id.youtube_player_seekbar)
   private val fadeControlsContainer: FadeViewHelper = FadeViewHelper(controlsContainer)
@@ -68,6 +73,8 @@ class DefaultPlayerUiController(
   private var isCustomActionRightEnabled = false
 
   private var isMatchParent = false
+
+  private var currentSecond: Float = 0f
 
   private val youTubePlayerStateListener = object : AbstractYouTubePlayerListener() {
     override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
@@ -120,6 +127,10 @@ class DefaultPlayerUiController(
         }
       }
     }
+
+    override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) {
+      currentSecond = second
+    }
   }
 
   init {
@@ -146,11 +157,58 @@ class DefaultPlayerUiController(
     youtubePlayerSeekBar.youtubePlayerSeekBarListener = object : YouTubePlayerSeekBarListener {
       override fun seekTo(time: Float) = youTubePlayer.seekTo(time)
     }
-    panel.setOnClickListener { fadeControlsContainer.toggleVisibility() }
+
+    val gestureDetector = android.view.GestureDetector(panel.context, object : android.view.GestureDetector.SimpleOnGestureListener() {
+      override fun onDoubleTap(e: MotionEvent): Boolean {
+        val viewWidth = panel.width
+        val touchX = e.x
+
+        if (touchX < viewWidth * 0.35) {
+          // Seek backward 10 seconds
+          youTubePlayer.seekTo(currentSecond - 10f)
+          animateFeedback(rewindFeedback)
+        } else if (touchX > viewWidth * 0.65) {
+          // Seek forward 10 seconds
+          youTubePlayer.seekTo(currentSecond + 10f)
+          animateFeedback(forwardFeedback)
+        }
+        return true
+      }
+
+      override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+        fadeControlsContainer.toggleVisibility()
+        return true
+      }
+    })
+
+    panel.setOnTouchListener { _, event ->
+      gestureDetector.onTouchEvent(event)
+      true
+    }
+
     playPauseButton.setOnClickListener { onPlayButtonPressed() }
     fullscreenButton.setOnClickListener { onFullscreenButtonListener.onClick(fullscreenButton) }
     menuButton.setOnClickListener { onMenuButtonClickListener.onClick(menuButton) }
     arrowDownButton.setOnClickListener { onArrowDownButtonClickListener.onClick(arrowDownButton) }
+  }
+
+  private fun animateFeedback(view: View) {
+      view.visibility = View.VISIBLE
+      view.alpha = 0f
+      view.animate()
+          .alpha(1f)
+          .setDuration(200)
+          .setListener(null)
+          .withEndAction {
+              view.postDelayed({
+                  view.animate()
+                      .alpha(0f)
+                      .setDuration(200)
+                      .withEndAction { view.visibility = View.GONE }
+                      .start()
+              }, 400)
+          }
+          .start()
   }
 
   override fun showVideoTitle(show: Boolean): PlayerUiController {
