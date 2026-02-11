@@ -32,6 +32,7 @@ class YouTubePlayerSeekBar(context: Context, attrs: AttributeSet? = null) :
   val videoCurrentTimeTextView = TextView(context)
   val videoDurationTextView = TextView(context)
   val seekBar = SeekBar(context)
+  private val rightContainer = LinearLayout(context)
 
   init {
     val typedArray =
@@ -65,24 +66,51 @@ class YouTubePlayerSeekBar(context: Context, attrs: AttributeSet? = null) :
     seekBar.setPadding(padding * 2, padding, padding * 2, padding)
     setColor(color)
 
-    addView(
-      videoCurrentTimeTextView,
-      LayoutParams(
-        LayoutParams.WRAP_CONTENT,
-        LayoutParams.WRAP_CONTENT
-      )
-    )
-    addView(seekBar, LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
-    addView(
-      videoDurationTextView,
-      LayoutParams(
-        LayoutParams.WRAP_CONTENT,
-        LayoutParams.WRAP_CONTENT
-      )
-    )
+    val timeContainer = LinearLayout(context)
+    timeContainer.orientation = HORIZONTAL
+    timeContainer.gravity = Gravity.CENTER_VERTICAL
+    timeContainer.setPadding(padding, 0, padding, 0)
 
-    gravity = Gravity.CENTER_VERTICAL
+    videoCurrentTimeTextView.setPadding(0, 0, 0, 0)
+    videoDurationTextView.setPadding(0, 0, 0, 0)
 
+    val separatorTextView = TextView(context)
+    separatorTextView.text = " / "
+    separatorTextView.setTextColor(ContextCompat.getColor(context, android.R.color.white))
+    separatorTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize.toFloat())
+
+    timeContainer.addView(videoCurrentTimeTextView)
+    timeContainer.addView(separatorTextView)
+    timeContainer.addView(videoDurationTextView)
+
+    val headerContainer = LinearLayout(context)
+    headerContainer.orientation = HORIZONTAL
+    headerContainer.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+    headerContainer.gravity = Gravity.CENTER_VERTICAL
+    
+    // Config time container background
+    timeContainer.setBackgroundResource(R.drawable.ayp_text_background)
+    val bgPadding = resources.getDimensionPixelSize(R.dimen.ayp_8dp)
+    timeContainer.setPadding(bgPadding, bgPadding / 4, bgPadding, bgPadding / 4)
+
+    rightContainer.orientation = HORIZONTAL
+    rightContainer.gravity = Gravity.CENTER_VERTICAL
+    rightContainer.setPadding(padding, 0, padding, 0)
+
+    val space = android.view.View(context)
+    space.layoutParams = LinearLayout.LayoutParams(0, 0, 1f)
+
+    headerContainer.addView(timeContainer)
+    headerContainer.addView(space)
+    headerContainer.addView(rightContainer)
+
+    orientation = VERTICAL
+    addView(headerContainer)
+
+    val seekBarParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+    seekBarParams.topMargin = -padding
+    addView(seekBar, seekBarParams)
+    
     seekBar.setOnSeekBarChangeListener(this)
   }
 
@@ -184,6 +212,10 @@ class YouTubePlayerSeekBar(context: Context, attrs: AttributeSet? = null) :
   }
 
   override fun onError(youTubePlayer: YouTubePlayer, error: PlayerConstants.PlayerError) {}
+
+  fun addViewToHeader(view: android.view.View) {
+    rightContainer.addView(view)
+  }
 }
 
 interface YouTubePlayerSeekBarListener {

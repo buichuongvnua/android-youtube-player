@@ -21,14 +21,14 @@
         <View
             android:id="@+id/drop_shadow_top"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="120dp"
             android:layout_alignParentTop="true"
             android:background="@drawable/ayp_drop_shadow_top" />
 
         <View
             android:id="@+id/drop_shadow_bottom"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="120dp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/ayp_drop_shadow_bottom" />
 
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="56dp"
+            android:layout_marginStart="64dp"
             android:layout_marginTop="12dp"
             android:layout_toStartOf="@+id/extra_views_container"
             android:ellipsize="end"
@@ -54,27 +54,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-
             android:layout_alignParentEnd="true"
-
             android:orientation="horizontal"
+            android:layout_marginEnd="24dp"
             android:padding="8dp">
 
-
             <ImageView
-                android:id="@+id/menu_button"
-                android:layout_width="@dimen/ayp_icon_size"
-                android:layout_height="@dimen/ayp_icon_size"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="@dimen/ayp_8dp"
+                android:id="@+id/cc_button"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:background="@drawable/ayp_icon_background_with_ripple"
                 android:clickable="true"
-                android:contentDescription="@string/ayp_open_video_in_youtube"
+                android:contentDescription="CC"
                 android:focusable="true"
-                android:padding="@dimen/ayp_icon_padding"
-                android:src="@drawable/ayp_ic_menu_24dp"
-                android:visibility="gone" />
+                android:padding="8dp"
+                android:src="@drawable/ayp_ic_cc_off"
+                android:visibility="visible" />
 
+            <ImageView
+                android:id="@+id/settings_button"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/ayp_icon_background_with_ripple"
+                android:clickable="true"
+                android:contentDescription="Settings"
+                android:focusable="true"
+                android:padding="8dp"
+                android:src="@drawable/ayp_ic_settings"
+                android:visibility="visible" />
         </LinearLayout>
 
         <ImageView
@@ -105,57 +112,178 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:gravity="bottom"
+            android:orientation="vertical">
 
             <com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.views.YouTubePlayerSeekBar
                 android:id="@+id/youtube_player_seekbar"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:maxHeight="100dp"
                 app:color="@color/ayp_red"
-
                 app:fontSize="12sp" />
 
-            <TextView
-                android:id="@+id/live_video_indicator"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/bottom_actions_row"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:padding="8dp"
-                android:text="@string/ayp_live"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingBottom="4dp">
 
-                android:textColor="@android:color/white"
-                android:textSize="12sp"
+                <TextView
+                    android:id="@+id/live_video_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:padding="8dp"
+                    android:text="@string/ayp_live"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
-                android:visibility="gone" />
+                <!-- Left: like, dislike, save, share, more_options -->
+                <LinearLayout
+                    android:id="@+id/left_actions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true">
 
-            <ImageView
-                android:id="@+id/youtube_button"
-                android:layout_width="@dimen/ayp_icon_size"
-                android:layout_height="@dimen/ayp_icon_size"
-                android:background="@drawable/ayp_icon_background_with_ripple"
-                android:clickable="false"
-                android:padding="@dimen/ayp_icon_padding"
-                android:contentDescription="@string/ayp_open_video_in_youtube"
-                android:focusable="true"
-                android:visibility="gone"
+                    <ImageView
+                        android:id="@+id/like_button"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/ayp_icon_background_with_ripple"
+                        android:clickable="true"
+                        android:contentDescription="Like"
+                        android:focusable="true"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_like_player"
+                        android:visibility="visible" />
 
-                android:src="@drawable/ayp_ic_youtube_24dp" />
+                    <ImageView
+                        android:id="@+id/dislike_button"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/ayp_icon_background_with_ripple"
+                        android:clickable="true"
+                        android:contentDescription="Dislike"
+                        android:focusable="true"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_dislike_player"
+                        android:visibility="visible" />
 
-            <ImageView
-                android:id="@+id/fullscreen_button"
-                android:layout_width="@dimen/ayp_icon_size"
-                android:layout_height="@dimen/ayp_icon_size"
-                android:background="@drawable/ayp_icon_background_with_ripple"
-                android:clickable="true"
+                    <ImageView
+                        android:id="@+id/save_button"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/ayp_icon_background_with_ripple"
+                        android:clickable="true"
+                        android:contentDescription="Save"
+                        android:focusable="true"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_save_player"
+                        android:visibility="visible" />
 
-                android:contentDescription="@string/ayp_full_screen_button"
-                android:focusable="true"
-                android:padding="@dimen/ayp_icon_padding"
+                    <ImageView
+                        android:id="@+id/share_button"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/ayp_icon_background_with_ripple"
+                        android:clickable="true"
+                        android:contentDescription="Share"
+                        android:focusable="true"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_share_player"
+                        android:visibility="visible" />
 
-                android:src="@drawable/ayp_ic_fullscreen_24dp" />
+                    <ImageView
+                        android:id="@+id/menu_button"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/ayp_icon_background_with_ripple"
+                        android:clickable="true"
+                        android:contentDescription="More"
+                        android:focusable="true"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_more_options"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+
+                <!-- Right: "Video khác" + fullscreen -->
+                <LinearLayout
+                    android:id="@+id/right_actions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:id="@+id/more_video_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/ayp_background_rounded_rect_ripple"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Video khác"
+                            android:textColor="@android:color/white"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/more_video_button"
+                            android:layout_width="48dp"
+                            android:layout_height="27dp"
+                            android:clickable="false"
+                            android:contentDescription="Next Video Thumbnail"
+                            android:focusable="false"
+                            android:scaleType="centerCrop"
+                            android:layout_marginStart="8dp"
+                            android:src="@android:color/darker_gray"
+                            android:visibility="visible" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/youtube_button"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/ayp_icon_background_with_ripple"
+                        android:clickable="false"
+                        android:contentDescription="@string/ayp_open_video_in_youtube"
+                        android:focusable="true"
+                        android:padding="8dp"
+                        android:src="@drawable/ayp_ic_youtube_24dp"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/fullscreen_button"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/ayp_icon_background_with_ripple"
+                        android:clickable="true"
+                        android:contentDescription="@string/ayp_full_screen_button"
+                        android:focusable="true"
+                        android:padding="8dp"
+                        android:src="@drawable/ayp_ic_fullscreen_24dp" />
+
+                </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 

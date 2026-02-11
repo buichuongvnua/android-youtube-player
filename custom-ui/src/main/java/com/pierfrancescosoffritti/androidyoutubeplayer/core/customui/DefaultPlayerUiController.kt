@@ -41,6 +41,8 @@ open class DefaultPlayerUiController(
 
   private val controlsContainer: View = rootView.findViewById(R.id.controls_container)
   private val extraViewsContainer: LinearLayout = rootView.findViewById(R.id.extra_views_container)
+  private val ccButton: ImageView = rootView.findViewById(R.id.cc_button)
+  private val settingsButton: ImageView = rootView.findViewById(R.id.settings_button)
 
   private val videoTitle: TextView = rootView.findViewById(R.id.video_title)
   private val liveVideoIndicator: TextView = rootView.findViewById(R.id.live_video_indicator)
@@ -55,6 +57,13 @@ open class DefaultPlayerUiController(
   private val customActionRight: ImageView = rootView.findViewById(R.id.custom_action_right_button)
   private val arrowDownButton: ImageView = rootView.findViewById(R.id.arrow_down_button)
   private val lockButton: ImageView = rootView.findViewById(R.id.lock_button)
+  private val likeButton: ImageView = rootView.findViewById(R.id.like_button)
+  private val dislikeButton: ImageView = rootView.findViewById(R.id.dislike_button)
+  private val saveButton: ImageView = rootView.findViewById(R.id.save_button)
+  private val shareButton: ImageView = rootView.findViewById(R.id.share_button)
+  private val moreVideoContainer: LinearLayout = rootView.findViewById(R.id.more_video_container)
+  private val moreVideoButton: ImageView = rootView.findViewById(R.id.more_video_button)
+  private val bottomActionsRow: View = rootView.findViewById(R.id.bottom_actions_row)
 
   private val rewindFeedback: LinearLayout = rootView.findViewById(R.id.rewind_feedback_container)
   private val forwardFeedback: LinearLayout = rootView.findViewById(R.id.forward_feedback_container)
@@ -66,6 +75,13 @@ open class DefaultPlayerUiController(
   private var onFullscreenButtonListener: View.OnClickListener
   private var onMenuButtonClickListener: View.OnClickListener
   private var onArrowDownButtonClickListener: View.OnClickListener
+  private var onLikeButtonClickListener: View.OnClickListener? = null
+  private var onDislikeButtonClickListener: View.OnClickListener? = null
+  private var onSaveButtonClickListener: View.OnClickListener? = null
+  private var onShareButtonClickListener: View.OnClickListener? = null
+  private var onMoreVideoButtonClickListener: View.OnClickListener? = null
+  private var onCcButtonClickListener: View.OnClickListener? = null
+  private var onSettingsButtonClickListener: View.OnClickListener? = null
 
   private var isPlaying = false
   private var isPlayPauseButtonEnabled = true
@@ -147,6 +163,9 @@ open class DefaultPlayerUiController(
     }
 
     initClickListeners()
+
+    (fullscreenButton.parent as? android.view.ViewGroup)?.removeView(fullscreenButton)
+    youtubePlayerSeekBar.addViewToHeader(fullscreenButton)
   }
 
   private fun initClickListeners() {
@@ -190,6 +209,13 @@ open class DefaultPlayerUiController(
     fullscreenButton.setOnClickListener { onFullscreenButtonListener.onClick(fullscreenButton) }
     menuButton.setOnClickListener { onMenuButtonClickListener.onClick(menuButton) }
     arrowDownButton.setOnClickListener { onArrowDownButtonClickListener.onClick(arrowDownButton) }
+    likeButton.setOnClickListener { onLikeButtonClickListener?.onClick(likeButton) }
+    dislikeButton.setOnClickListener { onDislikeButtonClickListener?.onClick(dislikeButton) }
+    saveButton.setOnClickListener { onSaveButtonClickListener?.onClick(saveButton) }
+    shareButton.setOnClickListener { onShareButtonClickListener?.onClick(shareButton) }
+    moreVideoContainer.setOnClickListener { onMoreVideoButtonClickListener?.onClick(moreVideoButton) }
+    ccButton.setOnClickListener { onCcButtonClickListener?.onClick(ccButton) }
+    settingsButton.setOnClickListener { onSettingsButtonClickListener?.onClick(settingsButton) }
   }
 
   private fun animateFeedback(view: View) {
@@ -292,6 +318,31 @@ open class DefaultPlayerUiController(
     return this
   }
 
+  fun setLikeButtonClickListener(listener: View.OnClickListener): PlayerUiController {
+    onLikeButtonClickListener = listener
+    return this
+  }
+
+  fun setDislikeButtonClickListener(listener: View.OnClickListener): PlayerUiController {
+    onDislikeButtonClickListener = listener
+    return this
+  }
+
+  fun setSaveButtonClickListener(listener: View.OnClickListener): PlayerUiController {
+    onSaveButtonClickListener = listener
+    return this
+  }
+
+  fun setShareButtonClickListener(listener: View.OnClickListener): PlayerUiController {
+    onShareButtonClickListener = listener
+    return this
+  }
+
+  fun setMoreVideoButtonClickListener(listener: View.OnClickListener): PlayerUiController {
+    onMoreVideoButtonClickListener = listener
+    return this
+  }
+
   override fun showLockButton(show: Boolean): PlayerUiController {
     lockButton.visibility = if (show) View.VISIBLE else View.GONE
     return this
@@ -318,7 +369,9 @@ open class DefaultPlayerUiController(
     arrowDownButton.visibility = View.GONE
     youtubePlayerSeekBar.visibility = View.GONE
     liveVideoIndicator.visibility = View.GONE
+    extraViewsContainer.visibility = View.GONE
     lockButton.visibility = View.VISIBLE
+    bottomActionsRow.visibility = View.GONE
   }
 
   fun showAllControls() {
@@ -326,10 +379,11 @@ open class DefaultPlayerUiController(
     if (isCustomActionLeftEnabled) customActionLeft.visibility = View.VISIBLE
     if (isCustomActionRightEnabled) customActionRight.visibility = View.VISIBLE
     videoTitle.visibility = View.VISIBLE
-    menuButton.visibility = View.VISIBLE
     fullscreenButton.visibility = View.VISIBLE
     arrowDownButton.visibility = View.VISIBLE
     youtubePlayerSeekBar.visibility = View.VISIBLE
+    bottomActionsRow.visibility = View.VISIBLE
+    extraViewsContainer.visibility = View.VISIBLE
   }
 
   override fun showCurrentTime(show: Boolean): PlayerUiController {
@@ -402,4 +456,22 @@ open class DefaultPlayerUiController(
     val drawable = if (playing) R.drawable.ayp_ic_pause_36dp else R.drawable.ayp_ic_play_36dp
     playPauseButton.setImageResource(drawable)
   }
+
+  fun setCcButtonClickListener(listener: View.OnClickListener): PlayerUiController {
+    onCcButtonClickListener = listener
+    return this
+  }
+
+  fun setSettingsButtonClickListener(listener: View.OnClickListener): PlayerUiController {
+    onSettingsButtonClickListener = listener
+    return this
+  }
+
+  fun setCcEnabled(isEnabled: Boolean) {
+    val drawable = if (isEnabled) R.drawable.ayp_ic_cc_on else R.drawable.ayp_ic_cc_off
+    ccButton.setImageResource(drawable)
+    ccButton.clearColorFilter()
+  }
+
+  fun getMoreVideoThumbnail(): ImageView = moreVideoButton
 }
