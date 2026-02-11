@@ -84,6 +84,7 @@ open class DefaultPlayerUiController(
   private var onSettingsButtonClickListener: View.OnClickListener? = null
 
   private var isPlaying = false
+  private var showBottomActions = false
   private var isPlayPauseButtonEnabled = true
   private var isCustomActionLeftEnabled = false
   private var isCustomActionRightEnabled = false
@@ -163,6 +164,7 @@ open class DefaultPlayerUiController(
     }
 
     initClickListeners()
+    bottomActionsRow.visibility = View.GONE
 
     (fullscreenButton.parent as? android.view.ViewGroup)?.removeView(fullscreenButton)
     youtubePlayerSeekBar.addViewToHeader(fullscreenButton)
@@ -374,6 +376,13 @@ open class DefaultPlayerUiController(
     bottomActionsRow.visibility = View.GONE
   }
 
+  fun setShowBottomActions(show: Boolean) {
+    showBottomActions = show
+    if (controlsContainer.visibility == View.VISIBLE) {
+        bottomActionsRow.visibility = if (show) View.VISIBLE else View.GONE
+    }
+  }
+
   fun showAllControls() {
     if (isPlayPauseButtonEnabled) playPauseButton.visibility = View.VISIBLE
     if (isCustomActionLeftEnabled) customActionLeft.visibility = View.VISIBLE
@@ -382,7 +391,7 @@ open class DefaultPlayerUiController(
     fullscreenButton.visibility = View.VISIBLE
     arrowDownButton.visibility = View.VISIBLE
     youtubePlayerSeekBar.visibility = View.VISIBLE
-    bottomActionsRow.visibility = View.VISIBLE
+    bottomActionsRow.visibility = if (showBottomActions) View.VISIBLE else View.GONE
     extraViewsContainer.visibility = View.VISIBLE
   }
 
