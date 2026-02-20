@@ -1,12 +1,18 @@
 package com.pierfrancescosoffritti.androidyoutubeplayer.core.customui
 
 import android.content.Intent
+import android.content.Context
 import android.graphics.drawable.Drawable
+import android.media.AudioManager
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -71,6 +77,30 @@ open class DefaultPlayerUiController(
   private val youtubePlayerSeekBar: YouTubePlayerSeekBar =
     rootView.findViewById(R.id.youtube_player_seekbar)
   private val fadeControlsContainer: FadeViewHelper = FadeViewHelper(controlsContainer)
+
+  // Volume/Brightness overlay views
+  private val vbOverlay: View = rootView.findViewById(R.id.volume_brightness_overlay)
+  private val vbOverlayIcon: ImageView = rootView.findViewById(R.id.vb_overlay_icon)
+  private val vbOverlayProgress: ProgressBar = rootView.findViewById(R.id.vb_overlay_progress)
+  private val vbOverlayText: TextView = rootView.findViewById(R.id.vb_overlay_text)
+
+  // Volume/Brightness state
+  private val audioManager = youTubePlayerView.context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+  private val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+  private var volumeLevel = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC).toFloat() / maxVolume
+  private var brightnessLevel: Float = run {
+    val activity = findActivity(youTubePlayerView.context)
+    val currentBrightness = activity?.window?.attributes?.screenBrightness ?: -1f
+    if (currentBrightness < 0) {
+      try {
+        Settings.System.getInt(youTubePlayerView.context.contentResolver, Settings.System.SCREEN_BRIGHTNESS)
+          .toFloat() / 255f
+      } catch (e: Exception) { 0.5f }
+    } else { currentBrightness }
+  }
+  private var isFullscreenMode = false
+  private val hideOverlayHandler = Handler(Looper.getMainLooper())
+  private val hideOverlayRunnable = Runnable { vbOverlay.visibility = View.GONE }
 
   private var onFullscreenButtonListener: View.OnClickListener
   private var onMenuButtonClickListener: View.OnClickListener
@@ -180,6 +210,15 @@ open class DefaultPlayerUiController(
     }
 
     val gestureDetector = android.view.GestureDetector(panel.context, object : android.view.GestureDetector.SimpleOnGestureListener() {
+      private var startX = 0f
+      private var isDragging = false
+
+      override fun onDown(e: MotionEvent): Boolean {
+        startX = e.x
+        isDragging = false
+        return true
+      }
+
       override fun onDoubleTap(e: MotionEvent): Boolean {
         val viewWidth = panel.width
         val touchX = e.x
@@ -198,6 +237,32 @@ open class DefaultPlayerUiController(
 
       override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
         fadeControlsContainer.toggleVisibility()
+        return true
+      }
+
+      override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+        if (!isFullscreenMode) return false
+        if (Math.abs(distanceY) < Math.abs(distanceX)) return false
+
+        isDragging = true
+        val sensitivity = 0.005f
+        val isLeftHalf = startX < (panel.width / 2)
+
+        if (isLeftHalf) {
+          // Brightness
+          brightnessLevel = (brightnessLevel + (distanceY * sensitivity)).coerceIn(0.01f, 1f)
+          val activity = findActivity(panel.context)
+          activity?.window?.attributes = activity?.window?.attributes?.apply {
+            screenBrightness = brightnessLevel
+          }
+          showVbOverlay(isBrightness = true, level = brightnessLevel)
+        } else {
+          // Volume
+          volumeLevel = (volumeLevel + (distanceY * sensitivity)).coerceIn(0f, 1f)
+          val newVolume = (volumeLevel * maxVolume).toInt()
+          audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0)
+          showVbOverlay(isBrightness = false, level = volumeLevel)
+        }
         return true
       }
     })
@@ -483,4 +548,43 @@ open class DefaultPlayerUiController(
   }
 
   fun getMoreVideoThumbnail(): ImageView = moreVideoButton
+
+  // --- Volume/Brightness helpers ---
+
+  fun setFullscreenMode(fullscreen: Boolean) {
+    isFullscreenMode = fullscreen
+  }
+
+  private fun showVbOverlay(isBrightness: Boolean, level: Float) {
+    val percent = (level * 100).toInt()
+
+    // Set icon
+    val iconRes = if (isBrightness) {
+      if (level > 0.5f) R.drawable.ayp_ic_brightness_high else R.drawable.ayp_ic_brightness_low
+    } else {
+      when {
+        level <= 0f -> R.drawable.ayp_ic_volume_off
+        level < 0.5f -> R.drawable.ayp_ic_volume_down
+        else -> R.drawable.ayp_ic_volume_up
+      }
+    }
+    vbOverlayIcon.setImageResource(iconRes)
+    vbOverlayProgress.progress = percent
+    vbOverlayText.text = "$percent%"
+
+    vbOverlay.visibility = View.VISIBLE
+
+    // Auto-hide after 1 second
+    hideOverlayHandler.removeCallbacks(hideOverlayRunnable)
+    hideOverlayHandler.postDelayed(hideOverlayRunnable, 1000)
+  }
+
+  private fun findActivity(context: android.content.Context): android.app.Activity? {
+    var ctx = context
+    while (ctx is android.content.ContextWrapper) {
+      if (ctx is android.app.Activity) return ctx
+      ctx = ctx.baseContext
+    }
+    return null
+  }
 }
