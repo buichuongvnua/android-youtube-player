@@ -121,6 +121,8 @@ open class DefaultPlayerUiController(
 
   private var isMatchParent = false
 
+  var isLocked = false
+
   private var currentSecond: Float = 0f
 
   private val youTubePlayerStateListener = object : AbstractYouTubePlayerListener() {
@@ -220,6 +222,7 @@ open class DefaultPlayerUiController(
       }
 
       override fun onDoubleTap(e: MotionEvent): Boolean {
+        if (isLocked) return false
         val viewWidth = panel.width
         val touchX = e.x
 
@@ -241,6 +244,7 @@ open class DefaultPlayerUiController(
       }
 
       override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+        if (isLocked) return false
         if (!isFullscreenMode) return false
         if (Math.abs(distanceY) < Math.abs(distanceX)) return false
 
