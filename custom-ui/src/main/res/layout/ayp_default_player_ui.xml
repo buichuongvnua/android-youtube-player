@@ -57,6 +57,7 @@
             android:layout_alignParentEnd="true"
             android:orientation="horizontal"
             android:layout_marginEnd="24dp"
+            android:layout_marginTop="32dp"
             android:padding="8dp">
 
             <ImageView
@@ -145,77 +146,6 @@
                     android:textSize="12sp"
                     android:visibility="gone" />
 
-                <!-- Left: like, dislike, save, share, more_options -->
-                <LinearLayout
-                    android:id="@+id/left_actions"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:id="@+id/like_button"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/ayp_icon_background_with_ripple"
-                        android:clickable="true"
-                        android:contentDescription="Like"
-                        android:focusable="true"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_like_player"
-                        android:visibility="visible" />
-
-                    <ImageView
-                        android:id="@+id/dislike_button"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/ayp_icon_background_with_ripple"
-                        android:clickable="true"
-                        android:contentDescription="Dislike"
-                        android:focusable="true"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_dislike_player"
-                        android:visibility="visible" />
-
-                    <ImageView
-                        android:id="@+id/save_button"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/ayp_icon_background_with_ripple"
-                        android:clickable="true"
-                        android:contentDescription="Save"
-                        android:focusable="true"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_save_player"
-                        android:visibility="visible" />
-
-                    <ImageView
-                        android:id="@+id/share_button"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/ayp_icon_background_with_ripple"
-                        android:clickable="true"
-                        android:contentDescription="Share"
-                        android:focusable="true"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_share_player"
-                        android:visibility="visible" />
-
-                    <ImageView
-                        android:id="@+id/menu_button"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/ayp_icon_background_with_ripple"
-                        android:clickable="true"
-                        android:contentDescription="More"
-                        android:focusable="true"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_more_options"
-                        android:visibility="visible" />
-
-                </LinearLayout>
 
                 <!-- Right: "Video khác" + fullscreen -->
                 <LinearLayout
@@ -306,7 +236,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/ayp_ic_skip_back"
-                app:tint="@android:color/white" />
+                android:tint="@android:color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -334,7 +264,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/ayp_ic_skip_forward"
-                app:tint="@android:color/white" />
+                android:tint="@android:color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -432,7 +362,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:src="@drawable/ayp_ic_play_36dp"
-            app:tint="@android:color/white" />
+            android:tint="@android:color/white" />
 
         <ProgressBar
             android:id="@+id/vb_overlay_progress"

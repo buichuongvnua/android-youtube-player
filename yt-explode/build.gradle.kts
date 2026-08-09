@@ -1,12 +1,11 @@
 plugins {
   alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
   kotlin("plugin.serialization") version "1.9.10"
 }
 
 android {
   namespace = "com.moynext.yt_explode"
-  compileSdk = 36
+  compileSdk = 37
 
   defaultConfig {
     minSdk = 24
@@ -24,9 +23,6 @@ android {
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
-  }
-  kotlinOptions {
-    jvmTarget = "11"
   }
 }
 

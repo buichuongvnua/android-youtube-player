@@ -1,9 +1,8 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 apply from: '../dependencies.gradle'
 
 android {
-    compileSdkVersion versions.compileSdk
+    compileSdk versions.compileSdk
 
     defaultConfig {
         minSdkVersion versions.minSdk
@@ -23,9 +22,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+
 }
 
 dependencies {

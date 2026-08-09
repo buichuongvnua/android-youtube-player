@@ -54,7 +54,6 @@ open class DefaultPlayerUiController(
   private val liveVideoIndicator: TextView = rootView.findViewById(R.id.live_video_indicator)
 
   private val progressBar: ProgressBar = rootView.findViewById(R.id.progress)
-  private val menuButton: ImageView = rootView.findViewById(R.id.menu_button)
   private val playPauseButton: ImageView = rootView.findViewById(R.id.play_pause_button)
   private val youTubeButton: ImageView = rootView.findViewById(R.id.youtube_button)
   private val fullscreenButton: ImageView = rootView.findViewById(R.id.fullscreen_button)
@@ -63,10 +62,6 @@ open class DefaultPlayerUiController(
   private val customActionRight: ImageView = rootView.findViewById(R.id.custom_action_right_button)
   private val arrowDownButton: ImageView = rootView.findViewById(R.id.arrow_down_button)
   private val lockButton: ImageView = rootView.findViewById(R.id.lock_button)
-  private val likeButton: ImageView = rootView.findViewById(R.id.like_button)
-  private val dislikeButton: ImageView = rootView.findViewById(R.id.dislike_button)
-  private val saveButton: ImageView = rootView.findViewById(R.id.save_button)
-  private val shareButton: ImageView = rootView.findViewById(R.id.share_button)
   private val moreVideoContainer: LinearLayout = rootView.findViewById(R.id.more_video_container)
   private val moreVideoButton: ImageView = rootView.findViewById(R.id.more_video_button)
   private val bottomActionsRow: View = rootView.findViewById(R.id.bottom_actions_row)
@@ -191,7 +186,7 @@ open class DefaultPlayerUiController(
       }
     }
 
-    onMenuButtonClickListener = View.OnClickListener { youTubePlayerMenu.show(menuButton) }
+    onMenuButtonClickListener = View.OnClickListener { }
     onArrowDownButtonClickListener = View.OnClickListener {
     }
 
@@ -278,12 +273,7 @@ open class DefaultPlayerUiController(
 
     playPauseButton.setOnClickListener { onPlayButtonPressed() }
     fullscreenButton.setOnClickListener { onFullscreenButtonListener.onClick(fullscreenButton) }
-    menuButton.setOnClickListener { onMenuButtonClickListener.onClick(menuButton) }
     arrowDownButton.setOnClickListener { onArrowDownButtonClickListener.onClick(arrowDownButton) }
-    likeButton.setOnClickListener { onLikeButtonClickListener?.onClick(likeButton) }
-    dislikeButton.setOnClickListener { onDislikeButtonClickListener?.onClick(dislikeButton) }
-    saveButton.setOnClickListener { onSaveButtonClickListener?.onClick(saveButton) }
-    shareButton.setOnClickListener { onShareButtonClickListener?.onClick(shareButton) }
     moreVideoContainer.setOnClickListener { onMoreVideoButtonClickListener?.onClick(moreVideoButton) }
     ccButton.setOnClickListener { onCcButtonClickListener?.onClick(ccButton) }
     settingsButton.setOnClickListener { onSettingsButtonClickListener?.onClick(settingsButton) }
@@ -370,7 +360,6 @@ open class DefaultPlayerUiController(
   }
 
   override fun showMenuButton(show: Boolean): PlayerUiController {
-    menuButton.visibility = if (show) View.VISIBLE else View.GONE
     return this
   }
 
@@ -432,7 +421,6 @@ open class DefaultPlayerUiController(
   fun hideAllControlsExceptLock() {
     videoTitle.visibility = View.GONE
     playPauseButton.visibility = View.GONE
-    menuButton.visibility = View.GONE
     youTubeButton.visibility = View.GONE
     fullscreenButton.visibility = View.GONE
     customActionLeft.visibility = View.GONE
