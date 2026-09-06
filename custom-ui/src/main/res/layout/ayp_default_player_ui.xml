@@ -58,7 +58,8 @@
             android:orientation="horizontal"
             android:layout_marginEnd="24dp"
             android:layout_marginTop="32dp"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/cc_button"
@@ -82,7 +83,7 @@
                 android:focusable="true"
                 android:padding="8dp"
                 android:src="@drawable/ayp_ic_settings"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </LinearLayout>
 
         <ImageView
@@ -326,7 +327,7 @@
             android:focusable="true"
             android:padding="@dimen/ayp_icon_padding"
             android:src="@drawable/ayp_ic_lock"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/arrow_down_button"

@@ -359,7 +359,12 @@ open class DefaultPlayerUiController(
     return this
   }
 
+  private var isMenuButtonEnabled = false
+
   override fun showMenuButton(show: Boolean): PlayerUiController {
+    isMenuButtonEnabled = show
+    extraViewsContainer.visibility = if (show) View.VISIBLE else View.GONE
+    settingsButton.visibility = if (show) View.VISIBLE else View.GONE
     return this
   }
 
@@ -403,7 +408,10 @@ open class DefaultPlayerUiController(
     return this
   }
 
+  private var isLockButtonEnabled = false
+
   override fun showLockButton(show: Boolean): PlayerUiController {
+    isLockButtonEnabled = show
     lockButton.visibility = if (show) View.VISIBLE else View.GONE
     return this
   }
@@ -414,7 +422,7 @@ open class DefaultPlayerUiController(
   ): PlayerUiController {
     lockButton.setImageDrawable(icon)
     lockButton.setOnClickListener(clickListener)
-    showLockButton(true)
+    lockButton.visibility = if (isLockButtonEnabled) View.VISIBLE else View.GONE
     return this
   }
 
@@ -449,7 +457,8 @@ open class DefaultPlayerUiController(
     arrowDownButton.visibility = View.VISIBLE
     youtubePlayerSeekBar.visibility = View.VISIBLE
     bottomActionsRow.visibility = if (showBottomActions) View.VISIBLE else View.GONE
-    extraViewsContainer.visibility = View.VISIBLE
+    extraViewsContainer.visibility = if (isMenuButtonEnabled) View.VISIBLE else View.GONE
+    lockButton.visibility = if (isLockButtonEnabled) View.VISIBLE else View.GONE
   }
 
   override fun showCurrentTime(show: Boolean): PlayerUiController {
