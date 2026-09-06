@@ -54,6 +54,7 @@ interface YouTubePlayer {
   fun seekTo(time: Float)
 
   fun setPlaybackRate(playbackRate: PlayerConstants.PlaybackRate)
+  fun setClosedCaptionsEnabled(enabled: Boolean) {}
 
   fun addListener(listener: YouTubePlayerListener): Boolean
   fun removeListener(listener: YouTubePlayerListener): Boolean

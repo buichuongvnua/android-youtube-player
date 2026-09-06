@@ -370,6 +370,7 @@ open class DefaultPlayerUiController(
 
   override fun setMenuButtonClickListener(customMenuButtonClickListener: View.OnClickListener): PlayerUiController {
     onMenuButtonClickListener = customMenuButtonClickListener
+    onSettingsButtonClickListener = customMenuButtonClickListener
     return this
   }
 

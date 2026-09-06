@@ -278,5 +278,18 @@
       YouTubePlayerCallbacks.sendBooleanValue(requestId, isMuted);
     }
 
+    function setClosedCaptionsEnabled(enabled) {
+      try {
+        if (player) {
+          if (enabled) {
+            player.loadModule('captions');
+          } else {
+            player.unloadModule('captions');
+          }
+        }
+      } catch (e) {
+      }
+    }
+
   </script>
 </html>
