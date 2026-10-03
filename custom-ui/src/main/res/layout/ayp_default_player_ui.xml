@@ -43,11 +43,25 @@
             android:layout_marginTop="12dp"
             android:layout_toStartOf="@+id/extra_views_container"
             android:ellipsize="end"
-            android:lines="2"
+            android:lines="1"
             android:padding="@dimen/ayp_8dp"
             android:text=""
             android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/video_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/video_title"
+            android:layout_marginStart="72dp"
+            android:layout_toStartOf="@id/extra_views_container"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#BFFFFFFF"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/extra_views_container"
@@ -57,47 +71,47 @@
             android:layout_alignParentEnd="true"
             android:orientation="horizontal"
             android:layout_marginEnd="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="8dp"
             android:padding="8dp"
             android:visibility="gone">
 
             <ImageView
                 android:id="@+id/cc_button"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="@drawable/ayp_icon_background_with_ripple"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/ayp_control_circle"
                 android:clickable="true"
                 android:contentDescription="CC"
                 android:focusable="true"
-                android:padding="8dp"
+                android:padding="12dp"
                 android:src="@drawable/ayp_ic_cc_off"
                 android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/settings_button"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="@drawable/ayp_icon_background_with_ripple"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/ayp_control_circle"
                 android:clickable="true"
                 android:contentDescription="Settings"
                 android:focusable="true"
-                android:padding="8dp"
+                android:padding="12dp"
                 android:src="@drawable/ayp_ic_settings"
                 android:visibility="gone" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/play_pause_button"
-            android:layout_width="@dimen/ayp_icon_size"
-            android:layout_height="@dimen/ayp_icon_size"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_centerInParent="true"
 
-            android:background="@drawable/ayp_icon_background_with_ripple"
+            android:background="@drawable/ayp_control_circle"
 
             android:clickable="true"
             android:contentDescription="@string/ayp_play_button"
             android:focusable="true"
-            android:padding="@dimen/ayp_icon_padding"
+            android:padding="12dp"
 
             android:src="@drawable/ayp_ic_play_36dp"
             android:visibility="invisible" />
@@ -143,10 +157,18 @@
                     android:layout_centerVertical="true"
                     android:padding="8dp"
                     android:text="@string/ayp_live"
+                    android:background="@drawable/ayp_live_badge"
+                    android:textStyle="bold"
                     android:textColor="@android:color/white"
                     android:textSize="12sp"
                     android:visibility="gone" />
 
+
+                <include layout="@layout/ayp_player_actions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true" />
 
                 <!-- Right: "Video khác" + fullscreen -->
                 <LinearLayout
@@ -161,35 +183,51 @@
                     <LinearLayout
                         android:id="@+id/more_video_container"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
+                        android:layout_height="48dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:background="@drawable/ayp_background_rounded_rect_ripple"
                         android:clickable="true"
                         android:focusable="true"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="4dp">
+                        android:paddingStart="16dp"
+                        android:paddingEnd="6dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Video khác"
+                            android:text="@string/ayp_more_videos"
                             android:textColor="@android:color/white"
-                            android:textSize="12sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <ImageView
                             android:id="@+id/more_video_button"
-                            android:layout_width="48dp"
-                            android:layout_height="27dp"
+                            android:layout_width="60dp"
+                            android:layout_height="34dp"
                             android:clickable="false"
-                            android:contentDescription="Next Video Thumbnail"
+                            android:contentDescription="@null"
                             android:focusable="false"
                             android:scaleType="centerCrop"
+                            android:background="@drawable/ayp_thumbnail_round"
+                            android:foreground="@drawable/ayp_thumbnail_border"
+                            android:clipToOutline="true"
                             android:layout_marginStart="8dp"
                             android:src="@android:color/darker_gray"
                             android:visibility="visible" />
                     </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/playlist_button"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/ayp_control_circle"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:contentDescription="@string/ayp_show_playlist"
+                        android:padding="14dp"
+                        android:layout_marginStart="12dp"
+                        android:src="@drawable/ayp_ic_playlist"
+                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/youtube_button"
@@ -205,13 +243,13 @@
 
                     <ImageView
                         android:id="@+id/fullscreen_button"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="@drawable/ayp_icon_background_with_ripple"
                         android:clickable="true"
                         android:contentDescription="@string/ayp_full_screen_button"
                         android:focusable="true"
-                        android:padding="8dp"
+                        android:padding="12dp"
                         android:src="@drawable/ayp_ic_fullscreen_24dp" />
 
                 </LinearLayout>
@@ -278,54 +316,54 @@
 
         <ImageView
             android:id="@+id/custom_action_left_button"
-            android:layout_width="@dimen/ayp_icon_size"
-            android:layout_height="@dimen/ayp_icon_size"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_centerVertical="true"
 
             android:layout_margin="32dp"
 
             android:layout_toStartOf="@+id/play_pause_button"
-            android:background="@drawable/ayp_icon_background_with_ripple"
+            android:background="@drawable/ayp_control_circle"
 
             android:clickable="true"
             android:contentDescription="@string/ayp_custom_action_left"
             android:focusable="true"
-            android:padding="@dimen/ayp_icon_padding"
+            android:padding="12dp"
 
             android:src="@drawable/ayp_ic_skip_back"
             android:visibility="visible" />
 
         <ImageView
             android:id="@+id/custom_action_right_button"
-            android:layout_width="@dimen/ayp_icon_size"
-            android:layout_height="@dimen/ayp_icon_size"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_centerVertical="true"
 
             android:layout_margin="32dp"
 
             android:layout_toEndOf="@+id/play_pause_button"
-            android:background="@drawable/ayp_icon_background_with_ripple"
+            android:background="@drawable/ayp_control_circle"
 
             android:clickable="true"
             android:contentDescription="@string/ayp_custom_action_right"
             android:focusable="true"
 
-            android:padding="@dimen/ayp_icon_padding"
+            android:padding="12dp"
             android:src="@drawable/ayp_ic_skip_forward"
             android:visibility="visible" />
 
         <ImageView
             android:id="@+id/lock_button"
-            android:layout_width="@dimen/ayp_icon_size"
-            android:layout_height="@dimen/ayp_icon_size"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="24dp"
             android:background="@drawable/ayp_icon_background_with_ripple"
             android:clickable="true"
-            android:contentDescription="@string/ayp_open_video_in_youtube"
+            android:contentDescription="@string/ayp_lock_controls"
             android:focusable="true"
-            android:padding="@dimen/ayp_icon_padding"
+            android:padding="12dp"
             android:src="@drawable/ayp_ic_lock"
             android:visibility="gone" />
 

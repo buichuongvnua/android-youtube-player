@@ -213,6 +213,13 @@ class YouTubePlayerSeekBar(context: Context, attrs: AttributeSet? = null) :
 
   override fun onError(youTubePlayer: YouTubePlayer, error: PlayerConstants.PlayerError) {}
 
+  fun setLiveMode(live: Boolean) {
+    seekBar.visibility = if (live) android.view.View.GONE else android.view.View.VISIBLE
+    // The header's first child contains elapsed / duration and its separator.
+    (getChildAt(0) as android.view.ViewGroup).getChildAt(0).visibility =
+      if (live) android.view.View.GONE else android.view.View.VISIBLE
+  }
+
   fun addViewToHeader(view: android.view.View) {
     rightContainer.addView(view)
   }

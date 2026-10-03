@@ -6,4 +6,11 @@
     <string name="ayp_live">LIVE</string>
     <string name="ayp_custom_action_left">YouTube player Custom action left</string>
     <string name="ayp_custom_action_right">YouTube player custom action right</string>
+    <string name="ayp_show_playlist">Show playlist</string>
+    <string name="ayp_more_videos">More videos</string>
+    <string name="ayp_save">Save to playlist</string>
+    <string name="ayp_share">Share</string>
+    <string name="ayp_lock_controls">Lock or unlock controls</string>
+    <string name="ayp_like">Like</string>
+    <string name="ayp_dislike">Dislike</string>
 </resources>

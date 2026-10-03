@@ -63,6 +63,7 @@ open class DefaultPlayerUiController(
   private val arrowDownButton: ImageView = rootView.findViewById(R.id.arrow_down_button)
   private val lockButton: ImageView = rootView.findViewById(R.id.lock_button)
   private val moreVideoContainer: LinearLayout = rootView.findViewById(R.id.more_video_container)
+  private val playlistButton: ImageView = rootView.findViewById(R.id.playlist_button)
   private val moreVideoButton: ImageView = rootView.findViewById(R.id.more_video_button)
   private val bottomActionsRow: View = rootView.findViewById(R.id.bottom_actions_row)
 
@@ -108,6 +109,7 @@ open class DefaultPlayerUiController(
   private var onCcButtonClickListener: View.OnClickListener? = null
   private var onSettingsButtonClickListener: View.OnClickListener? = null
 
+  private var isLiveVideo = false
   private var isPlaying = false
   private var showBottomActions = false
   private var isPlayPauseButtonEnabled = true
@@ -190,10 +192,16 @@ open class DefaultPlayerUiController(
     onArrowDownButtonClickListener = View.OnClickListener {
     }
 
+    rootView.findViewById<View>(R.id.save_button).setOnClickListener { onSaveButtonClickListener?.onClick(it) }
+    rootView.findViewById<View>(R.id.share_button).setOnClickListener { onShareButtonClickListener?.onClick(it) }
+    rootView.findViewById<View>(R.id.like_button).setOnClickListener { onLikeButtonClickListener?.onClick(it) }
+    rootView.findViewById<View>(R.id.dislike_button).setOnClickListener { onDislikeButtonClickListener?.onClick(it) }
     initClickListeners()
     bottomActionsRow.visibility = View.GONE
 
     (fullscreenButton.parent as? android.view.ViewGroup)?.removeView(fullscreenButton)
+    (liveVideoIndicator.parent as? android.view.ViewGroup)?.removeView(liveVideoIndicator)
+    youtubePlayerSeekBar.addViewToHeader(liveVideoIndicator)
     youtubePlayerSeekBar.addViewToHeader(fullscreenButton)
   }
 
@@ -217,17 +225,18 @@ open class DefaultPlayerUiController(
       }
 
       override fun onDoubleTap(e: MotionEvent): Boolean {
+        if (isLiveVideo) return true
         if (isLocked) return false
         val viewWidth = panel.width
         val touchX = e.x
 
         if (touchX < viewWidth * 0.35) {
           // Seek backward 10 seconds
-          youTubePlayer.seekTo(currentSecond - 10f)
+          if (!isLiveVideo) youTubePlayer.seekTo(currentSecond - 10f)
           animateFeedback(rewindFeedback)
         } else if (touchX > viewWidth * 0.65) {
           // Seek forward 10 seconds
-          youTubePlayer.seekTo(currentSecond + 10f)
+          if (!isLiveVideo) youTubePlayer.seekTo(currentSecond + 10f)
           animateFeedback(forwardFeedback)
         }
         return true
@@ -322,7 +331,8 @@ open class DefaultPlayerUiController(
   }
 
   override fun enableLiveVideoUi(enable: Boolean): PlayerUiController {
-    youtubePlayerSeekBar.visibility = if (enable) View.INVISIBLE else View.VISIBLE
+    isLiveVideo = enable
+    youtubePlayerSeekBar.setLiveMode(enable)
     liveVideoIndicator.visibility = if (enable) View.VISIBLE else View.GONE
     return this
   }
@@ -365,6 +375,7 @@ open class DefaultPlayerUiController(
     isMenuButtonEnabled = show
     extraViewsContainer.visibility = if (show) View.VISIBLE else View.GONE
     settingsButton.visibility = if (show) View.VISIBLE else View.GONE
+    ccButton.visibility = if (show) View.VISIBLE else View.GONE
     return this
   }
 
@@ -404,6 +415,29 @@ open class DefaultPlayerUiController(
     return this
   }
 
+  fun setLikeCount(label: String?) {
+    rootView.findViewById<TextView>(R.id.like_count).apply {
+      text = label.orEmpty()
+      visibility = if (label.isNullOrBlank()) View.GONE else View.VISIBLE
+    }
+  }
+
+  fun setVideoAuthor(author: String) {
+    rootView.findViewById<TextView>(R.id.video_author).apply {
+      text = author
+      visibility = if (isFullscreenMode && author.isNotBlank()) View.VISIBLE else View.GONE
+    }
+  }
+
+  fun setPlaylistButtonClickListener(listener: View.OnClickListener) {
+    playlistButton.setOnClickListener(listener)
+  }
+
+  fun showPlaylistButton(show: Boolean) {
+    playlistButton.visibility = if (show) View.VISIBLE else View.GONE
+    moreVideoContainer.visibility = View.VISIBLE
+  }
+
   fun setMoreVideoButtonClickListener(listener: View.OnClickListener): PlayerUiController {
     onMoreVideoButtonClickListener = listener
     return this
@@ -428,6 +462,7 @@ open class DefaultPlayerUiController(
   }
 
   fun hideAllControlsExceptLock() {
+    rootView.findViewById<View>(R.id.video_author).visibility = View.GONE
     videoTitle.visibility = View.GONE
     playPauseButton.visibility = View.GONE
     youTubeButton.visibility = View.GONE
@@ -453,10 +488,12 @@ open class DefaultPlayerUiController(
     if (isPlayPauseButtonEnabled) playPauseButton.visibility = View.VISIBLE
     if (isCustomActionLeftEnabled) customActionLeft.visibility = View.VISIBLE
     if (isCustomActionRightEnabled) customActionRight.visibility = View.VISIBLE
+    rootView.findViewById<View>(R.id.video_author).visibility = if (isFullscreenMode) View.VISIBLE else View.GONE
     videoTitle.visibility = View.VISIBLE
     fullscreenButton.visibility = View.VISIBLE
     arrowDownButton.visibility = View.VISIBLE
     youtubePlayerSeekBar.visibility = View.VISIBLE
+    enableLiveVideoUi(isLiveVideo)
     bottomActionsRow.visibility = if (showBottomActions) View.VISIBLE else View.GONE
     extraViewsContainer.visibility = if (isMenuButtonEnabled) View.VISIBLE else View.GONE
     lockButton.visibility = if (isLockButtonEnabled) View.VISIBLE else View.GONE
@@ -555,6 +592,13 @@ open class DefaultPlayerUiController(
 
   fun setFullscreenMode(fullscreen: Boolean) {
     isFullscreenMode = fullscreen
+    val iconRes = if (fullscreen) {
+      R.drawable.ayp_ic_close_fullscreen_24dp
+    } else {
+      R.drawable.ayp_ic_fullscreen_24dp
+    }
+    fullscreenButton.setImageResource(iconRes)
+    fullscreenButton.clearColorFilter()
   }
 
   private fun showVbOverlay(isBrightness: Boolean, level: Float) {
