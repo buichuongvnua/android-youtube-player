@@ -280,6 +280,7 @@ open class DefaultPlayerUiController(
       true
     }
 
+    controlsContainer.setOnClickListener { fadeControlsContainer.toggleVisibility() }
     playPauseButton.setOnClickListener { onPlayButtonPressed() }
     fullscreenButton.setOnClickListener { onFullscreenButtonListener.onClick(fullscreenButton) }
     arrowDownButton.setOnClickListener { onArrowDownButtonClickListener.onClick(arrowDownButton) }
@@ -319,7 +320,7 @@ open class DefaultPlayerUiController(
 
   override fun showUi(show: Boolean): PlayerUiController {
     fadeControlsContainer.isDisabled = !show
-    controlsContainer.visibility = if (show) View.VISIBLE else View.INVISIBLE
+    fadeControlsContainer.setVisible(show)
     return this
   }
 

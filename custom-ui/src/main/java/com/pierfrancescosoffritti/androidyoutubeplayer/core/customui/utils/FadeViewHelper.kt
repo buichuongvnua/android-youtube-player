@@ -31,12 +31,25 @@ class FadeViewHelper(val targetView: View) : YouTubePlayerListener {
    */
   var fadeOutDelay = DEFAULT_FADE_OUT_DELAY
 
-  fun toggleVisibility() {
-    fade(if (isVisible) 0f else 1f)
+  fun setVisible(visible: Boolean) {
+    isVisible = visible
+    targetView.handler?.removeCallbacks(fadeOut)
+    targetView.animate().cancel()
+    targetView.alpha = if (visible) 1f else 0f
+    targetView.visibility = if (visible) View.VISIBLE else View.GONE
+    if (visible && isPlaying) {
+      targetView.handler?.postDelayed(fadeOut, fadeOutDelay)
+    }
   }
 
-  private fun fade(finalAlpha: Float) {
-    if (!canFade || isDisabled)
+  fun toggleVisibility() {
+    fade(if (isVisible) 0f else 1f, isUserToggle = true)
+  }
+
+  private fun fade(finalAlpha: Float, isUserToggle: Boolean = false) {
+    if (isDisabled)
+      return
+    if (!isUserToggle && !canFade)
       return
 
     isVisible = finalAlpha != 0f
@@ -48,12 +61,16 @@ class FadeViewHelper(val targetView: View) : YouTubePlayerListener {
     else
       targetView.handler?.removeCallbacks(fadeOut)
 
+    if (finalAlpha == 1f) {
+      targetView.visibility = View.VISIBLE
+    }
+
     targetView.animate()
       .alpha(finalAlpha)
       .setDuration(animationDuration)
       .setListener(object : Animator.AnimatorListener {
         override fun onAnimationStart(animator: Animator) {
-          if (finalAlpha == 1f) targetView.visibility = View.VISIBLE
+          targetView.visibility = View.VISIBLE
         }
 
         override fun onAnimationEnd(animator: Animator) {
