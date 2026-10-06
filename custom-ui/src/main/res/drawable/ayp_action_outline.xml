@@ -2,6 +2,6 @@
     <item><shape android:shape="rectangle">
         <solid android:color="#20000000" />
         <stroke android:width="1.25dp" android:color="#66FFFFFF" />
-        <corners android:radius="18dp" />
+        <corners android:radius="12dp" />
     </shape></item>
 </ripple>

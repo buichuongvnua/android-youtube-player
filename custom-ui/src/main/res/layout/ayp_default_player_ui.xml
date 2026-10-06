@@ -166,7 +166,7 @@
 
                 <include layout="@layout/ayp_player_actions"
                     android:layout_width="wrap_content"
-                    android:layout_height="48dp"
+                    android:layout_height="@dimen/ayp_action_row_height"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true" />
 
