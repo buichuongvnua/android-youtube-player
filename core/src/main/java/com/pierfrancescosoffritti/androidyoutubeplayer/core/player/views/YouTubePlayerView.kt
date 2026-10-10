@@ -56,6 +56,12 @@ class YouTubePlayerView(
 
   private val legacyTubePlayerView = LegacyYouTubePlayerView(context, webViewFullscreenListener)
 
+  /** Scale only the video surface; custom controls retain their original bounds. */
+  fun setVideoScale(scaleX: Float, scaleY: Float) {
+    legacyTubePlayerView.webViewYouTubePlayer.scaleX = scaleX
+    legacyTubePlayerView.webViewYouTubePlayer.scaleY = scaleY
+  }
+
   // this is a publicly accessible API
   var enableAutomaticInitialization: Boolean
 
