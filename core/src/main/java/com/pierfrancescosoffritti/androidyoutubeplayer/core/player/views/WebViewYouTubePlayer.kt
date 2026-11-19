@@ -9,7 +9,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.view.ViewGroup
 import androidx.annotation.GuardedBy
 import androidx.annotation.VisibleForTesting
 import com.pierfrancescosoffritti.androidyoutubeplayer.R
@@ -142,6 +145,15 @@ internal class WebViewYouTubePlayer constructor(
       .replace("<<injectedPlayerVars>>", playerOptions.toString())
 
     loadDataWithBaseURL(playerOptions.getOrigin(), htmlPage, "text/html", "utf-8", null)
+
+    webViewClient = object : WebViewClient() {
+      override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+        _youTubePlayer.getListeners().forEach { it.onStateChange(_youTubePlayer, PlayerConstants.PlayerState.PAUSED) }
+        (view.parent as? ViewGroup)?.removeView(view)
+        view.destroy()
+        return true
+      }
+    }
 
     webChromeClient = object : WebChromeClient() {
 

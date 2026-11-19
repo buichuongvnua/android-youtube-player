@@ -45,6 +45,13 @@
   </body>
 
   <script type="text/javascript">
+    try {
+      Object.defineProperty(document, 'hidden', { get: function() { return false; }, configurable: true });
+      Object.defineProperty(document, 'visibilityState', { get: function() { return 'visible'; }, configurable: true });
+      window.addEventListener('visibilitychange', function(e) { e.stopImmediatePropagation(); }, true);
+      document.addEventListener('visibilitychange', function(e) { e.stopImmediatePropagation(); }, true);
+    } catch (e) {}
+
     var UNSTARTED = "UNSTARTED";
     var ENDED = "ENDED";
     var PLAYING = "PLAYING";
@@ -280,11 +287,22 @@
 
     function setClosedCaptionsEnabled(enabled) {
       try {
+        var style = document.getElementById('ayp-cc-style');
+        if (!style) {
+          style = document.createElement('style');
+          style.id = 'ayp-cc-style';
+          document.head.appendChild(style);
+        }
+        style.textContent = enabled
+          ? ''
+          : '.ytp-caption-window-container, .caption-window { display: none !important; }';
         if (player) {
           if (enabled) {
             player.loadModule('captions');
           } else {
+            player.setOption('captions', 'track', {});
             player.unloadModule('captions');
+            player.unloadModule('cc');
           }
         }
       } catch (e) {
