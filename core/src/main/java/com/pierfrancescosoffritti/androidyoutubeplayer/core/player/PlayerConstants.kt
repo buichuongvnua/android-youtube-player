@@ -20,7 +20,7 @@ class PlayerConstants {
   }
 
   enum class PlaybackRate {
-    UNKNOWN, RATE_0_25, RATE_0_5, RATE_0_75, RATE_1, RATE_1_25, RATE_1_5, RATE_1_75, RATE_2
+    UNKNOWN, RATE_0_25, RATE_0_5, RATE_0_75, RATE_1, RATE_1_25, RATE_1_5, RATE_1_75, RATE_2, RATE_2_5, RATE_3
   }
 }
 
@@ -35,5 +35,7 @@ fun PlayerConstants.PlaybackRate.toFloat(): Float {
     PlayerConstants.PlaybackRate.RATE_1_5 -> 1.5f
     PlayerConstants.PlaybackRate.RATE_1_75 -> 1.75f
     PlayerConstants.PlaybackRate.RATE_2 -> 2f
+    PlayerConstants.PlaybackRate.RATE_2_5 -> 2.5f
+    PlayerConstants.PlaybackRate.RATE_3 -> 3f
   }
 }

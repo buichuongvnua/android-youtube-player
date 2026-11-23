@@ -2,6 +2,7 @@ package com.pierfrancescosoffritti.androidyoutubeplayer.core.customui
 
 import android.content.Intent
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.net.Uri
@@ -47,6 +48,8 @@ open class DefaultPlayerUiController(
 
   private val controlsContainer: View = rootView.findViewById(R.id.controls_container)
   private val extraViewsContainer: LinearLayout = rootView.findViewById(R.id.extra_views_container)
+  private val qualityButton: TextView = rootView.findViewById(R.id.quality_button)
+  private val speedButton: TextView = rootView.findViewById(R.id.speed_button)
   private val ccButton: ImageView = rootView.findViewById(R.id.cc_button)
   private val settingsButton: ImageView = rootView.findViewById(R.id.settings_button)
 
@@ -108,6 +111,8 @@ open class DefaultPlayerUiController(
   private var onMoreVideoButtonClickListener: View.OnClickListener? = null
   private var onCcButtonClickListener: View.OnClickListener? = null
   private var onSettingsButtonClickListener: View.OnClickListener? = null
+  private var onQualityButtonClickListener: View.OnClickListener? = null
+  private var onSpeedButtonClickListener: View.OnClickListener? = null
 
   private var isLiveVideo = false
   private var isPlaying = false
@@ -287,6 +292,8 @@ open class DefaultPlayerUiController(
     moreVideoContainer.setOnClickListener { onMoreVideoButtonClickListener?.onClick(moreVideoButton) }
     ccButton.setOnClickListener { onCcButtonClickListener?.onClick(ccButton) }
     settingsButton.setOnClickListener { onSettingsButtonClickListener?.onClick(settingsButton) }
+    qualityButton.setOnClickListener { onQualityButtonClickListener?.onClick(qualityButton) }
+    speedButton.setOnClickListener { onSpeedButtonClickListener?.onClick(speedButton) }
   }
 
   private fun animateFeedback(view: View) {
@@ -371,13 +378,42 @@ open class DefaultPlayerUiController(
   }
 
   private var isMenuButtonEnabled = false
+  private var isQuickControlsEnabled = true
 
   override fun showMenuButton(show: Boolean): PlayerUiController {
     isMenuButtonEnabled = show
-    extraViewsContainer.visibility = if (show) View.VISIBLE else View.GONE
-    settingsButton.visibility = if (show) View.VISIBLE else View.GONE
+    extraViewsContainer.visibility = if (show || isQuickControlsEnabled) View.VISIBLE else View.GONE
+    settingsButton.visibility = if (show || isQuickControlsEnabled) View.VISIBLE else View.GONE
     ccButton.visibility = if (show) View.VISIBLE else View.GONE
     return this
+  }
+
+  fun showQuickControls(show: Boolean): PlayerUiController {
+    isQuickControlsEnabled = show
+    qualityButton.visibility = if (show) View.VISIBLE else View.GONE
+    speedButton.visibility = if (show) View.VISIBLE else View.GONE
+    extraViewsContainer.visibility = if (show || isMenuButtonEnabled) View.VISIBLE else View.GONE
+    settingsButton.visibility = if (show || isMenuButtonEnabled) View.VISIBLE else View.GONE
+    return this
+  }
+
+  fun setQualityButtonClickListener(listener: View.OnClickListener): PlayerUiController {
+    onQualityButtonClickListener = listener
+    return this
+  }
+
+  fun setSpeedButtonClickListener(listener: View.OnClickListener): PlayerUiController {
+    onSpeedButtonClickListener = listener
+    return this
+  }
+
+  fun setQualityLabel(label: String) {
+    qualityButton.text = label
+  }
+
+  fun setSpeedLabel(label: String, isBoosted: Boolean = false) {
+    speedButton.text = label
+    speedButton.setTextColor(if (isBoosted) 0xFFFF5252.toInt() else Color.WHITE)
   }
 
   override fun setMenuButtonClickListener(customMenuButtonClickListener: View.OnClickListener): PlayerUiController {
@@ -496,7 +532,7 @@ open class DefaultPlayerUiController(
     youtubePlayerSeekBar.visibility = View.VISIBLE
     enableLiveVideoUi(isLiveVideo)
     bottomActionsRow.visibility = if (showBottomActions) View.VISIBLE else View.GONE
-    extraViewsContainer.visibility = if (isMenuButtonEnabled) View.VISIBLE else View.GONE
+    extraViewsContainer.visibility = if (isMenuButtonEnabled || isQuickControlsEnabled) View.VISIBLE else View.GONE
     lockButton.visibility = if (isLockButtonEnabled) View.VISIBLE else View.GONE
   }
 

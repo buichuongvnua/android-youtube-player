@@ -257,7 +257,28 @@
     }
 
     function setPlaybackRate(playbackRate) {
-      player.setPlaybackRate(playbackRate);
+      try {
+        if (player && player.setPlaybackRate) {
+          player.setPlaybackRate(playbackRate);
+        }
+        var iframe = document.querySelector('iframe');
+        var doc = iframe && (iframe.contentDocument || iframe.contentWindow.document);
+        var video = doc && doc.querySelector('video');
+        if (video) video.playbackRate = playbackRate;
+      } catch (e) {}
+    }
+
+    function setPlaybackQuality(quality) {
+      try {
+        if (!player) return;
+        if (!quality || quality === 'default' || quality === 'auto') {
+          if (player.setPlaybackQualityRange) player.setPlaybackQualityRange('small', 'highres');
+          if (player.setPlaybackQuality) player.setPlaybackQuality('default');
+        } else {
+          if (player.setPlaybackQualityRange) player.setPlaybackQualityRange(quality, quality);
+          if (player.setPlaybackQuality) player.setPlaybackQuality(quality);
+        }
+      } catch (e) {}
     }
 
     function nextVideo() {

@@ -61,6 +61,7 @@ private class YouTubePlayerImpl(
   }
   override fun seekTo(time: Float) = webView.invoke("seekTo", time)
   override fun setPlaybackRate(playbackRate: PlayerConstants.PlaybackRate) = webView.invoke("setPlaybackRate", playbackRate.toFloat())
+  override fun setPlaybackQuality(quality: String) = webView.invoke("setPlaybackQuality", quality)
   override fun setClosedCaptionsEnabled(enabled: Boolean) = webView.invoke("setClosedCaptionsEnabled", enabled)
   override fun addListener(listener: YouTubePlayerListener) = synchronized(lock) { listeners.add(listener) }
   override fun removeListener(listener: YouTubePlayerListener) = synchronized(lock) { listeners.remove(listener) }
